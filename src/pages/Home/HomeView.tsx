@@ -1,4 +1,5 @@
 import Header from '../../components/Header/Header'
+import MealCard from '../../components/MealCard/MealCard'
 import { useHomeViewModel } from './useHomeViewModel'
 
 function HomeView() {
@@ -13,12 +14,7 @@ function HomeView() {
 
       <section>
         {meals.map((meal) => (
-          <article key={meal.idMeal}>
-            <img src={meal.strMealThumb} alt={meal.strMeal} />
-            <h2>{meal.strMeal}</h2>
-            <p>Category: {meal.strCategory ?? 'Unknown'}</p>
-            <p>Area: {meal.strArea ?? 'Unknown'}</p>
-          </article>
+          <MealCard key={meal.idMeal} meal={meal} />
         ))}
       </section>
     </main>
