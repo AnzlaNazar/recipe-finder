@@ -45,6 +45,27 @@
   cursor: pointer;
 }
 
+.meal-card__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.meal-card__link {
+  padding: 0.5rem 0.85rem;
+  border: 1px solid #d3d3d3;
+  border-radius: 999px;
+  background: #fff;
+  color: #3f5233;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.meal-card__link:hover {
+  background: #f3f3f3;
+}
+
 .meal-card__favourite:hover {
   background: #ececec;
 }

@@ -1,12 +1,39 @@
-import { useState } from 'react'
-import { getMeals } from './HomeModel'
+import { useState, useEffect, useCallback } from 'react'
+import { getMeals, initialMeals } from './HomeModel'
 import type { Meal } from '../../types/meal'
+import { addFavourite, getFavourites } from '../../services/favouritesService'
 
 export function useHomeViewModel() {
   const [query, setQuery] = useState<string>('')
   const [meals, setMeals] = useState<Meal[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+  const [favouriteIds, setFavouriteIds] = useState<Set<string>>(new Set())
+
+  const loadFavourites = useCallback(() => {
+    const favourites = getFavourites()
+    setFavouriteIds(new Set(favourites.map((meal) => meal.idMeal)))
+  }, [])
+
+  const loadInitialMeals = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const mealList = await initialMeals()
+      setMeals(mealList)
+      loadFavourites()
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'An unexpected error occurred.'
+      setError(message)
+    } finally {
+      setLoading(false)
+    }
+  }, [loadFavourites])
+
+  useEffect(() => {
+    loadInitialMeals()
+  }, [loadInitialMeals])
 
   async function handleSearch() {
     setLoading(true)
@@ -15,12 +42,23 @@ export function useHomeViewModel() {
     try {
       const mealList = await getMeals(query)
       setMeals(mealList)
+      loadFavourites()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.'
       setError(message)
     } finally {
       setLoading(false)
     }
+  }
+
+  function resetHome() {
+    setQuery('')
+    loadInitialMeals()
+  }
+
+  function handleFavourite(meal: Meal) {
+    addFavourite(meal)
+    setFavouriteIds((ids) => new Set(ids).add(meal.idMeal))
   }
 
   return {
@@ -30,5 +68,8 @@ export function useHomeViewModel() {
     loading,
     error,
     handleSearch,
+    resetHome,
+    handleFavourite,
+    favouriteIds,
   }
 }

@@ -5,14 +5,15 @@ type HeaderProps = {
   query: string
   onQueryChange: (value: string) => void
   onSearch: () => void
+  onHomeClick?: () => void
 }
 
-function Header({ query, onQueryChange, onSearch }: HeaderProps) {
+function Header({ query, onQueryChange, onSearch, onHomeClick }: HeaderProps) {
   return (
     <header className="header">
       <div className="header__inner">
         <nav className="header__nav" aria-label="Main navigation">
-          <Link className="header__nav-link" to="/">
+          <Link className="header__nav-link" to="/" onClick={onHomeClick}>
             Home
           </Link>
           <Link className="header__nav-link" to="/favourites">

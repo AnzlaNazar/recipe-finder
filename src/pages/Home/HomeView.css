@@ -1,0 +1,23 @@
+.home {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+.home__status {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--space-sm) 0;
+  color: var(--color-text);
+}
+
+.home__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  padding: var(--space-lg) 0;
+}
+
+.home__list p {
+  margin: 0;
+}
