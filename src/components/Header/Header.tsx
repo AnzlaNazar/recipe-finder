@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom'
 import './Header.css'
 
-function Header() {
+type HeaderProps = {
+  query: string
+  onQueryChange: (value: string) => void
+  onSearch: () => void
+}
+
+function Header({ query, onQueryChange, onSearch }: HeaderProps) {
   return (
     <header className="header">
       <div className="header__inner">
@@ -16,11 +22,16 @@ function Header() {
 
         <form
           className="header__search"
-          onSubmit={(event) => event.preventDefault()}
+          onSubmit={(event) => {
+            event.preventDefault()
+            onSearch()
+          }}
         >
           <input
             className="header__search-input"
             type="search"
+            value={query}
+            onChange={(event) => onQueryChange(event.target.value)}
             placeholder="Search recipes..."
             aria-label="Search recipes"
           />
