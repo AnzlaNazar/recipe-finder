@@ -1,16 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import type { User } from 'firebase/auth'
 import { logoutUser, subscribeToAuthChanges } from '../services/authService'
-
-type AuthContextValue = {
-  user: User | null
-  authLoading: boolean
-  logout: () => Promise<void>
-}
+import type { AuthContextValue, AuthProviderProps } from '../types/auth'
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
 

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { initialAuthFormState, type AuthFormState, type AuthViewModelState } from './AuthModel'
+import { initialAuthFormState } from './AuthModel'
 import { login, register } from './AuthModel'
+import type { AuthFormState, AuthViewModelState } from '../../types/auth'
 
 export function useAuthViewModel() {
   const [form, setForm] = useState<AuthFormState>(initialAuthFormState)

@@ -1,18 +1,6 @@
 import type { User } from 'firebase/auth'
 import { loginUser, logoutUser, registerUser } from '../../services/authService'
-
-export type AuthFormState = {
-  email: string
-  password: string
-}
-
-export type AuthViewModelState = {
-  email: string
-  password: string
-  mode: 'login' | 'register'
-  loading: boolean
-  error: string | null
-}
+import type { AuthFormState } from '../../types/auth'
 
 export const initialAuthFormState: AuthFormState = {
   email: '',
