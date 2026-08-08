@@ -9,6 +9,7 @@ export type AuthFormState = {
 export type AuthViewModelState = {
   email: string
   password: string
+  mode: 'login' | 'register'
   loading: boolean
   error: string | null
 }
