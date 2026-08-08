@@ -25,7 +25,7 @@ function HomeView() {
         onHomeClick={resetHome}
       />
 
-      {loading && <p className="home__status">Loading...</p>}
+      {loading && meals.length === 0 && <p className="home__status">Loading recipes…</p>}
       {error && (
         <p className="home__status" role="alert">
           {error}

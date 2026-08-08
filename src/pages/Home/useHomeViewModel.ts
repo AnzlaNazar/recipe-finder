@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getMeals, initialMeals } from './HomeModel'
 import type { Meal } from '../../types/meal'
-import { addFavourite, getFavourites } from '../../services/favouritesService'
+import { loadFavourites, saveFavourite } from '../Favourites/FavouritesModel'
 
 export function useHomeViewModel() {
   const [query, setQuery] = useState<string>('')
@@ -10,8 +10,8 @@ export function useHomeViewModel() {
   const [error, setError] = useState<string | null>(null)
   const [favouriteIds, setFavouriteIds] = useState<Set<string>>(new Set())
 
-  const loadFavourites = useCallback(() => {
-    const favourites = getFavourites()
+  const syncFavouriteIds = useCallback(async () => {
+    const favourites = await loadFavourites()
     setFavouriteIds(new Set(favourites.map((meal) => meal.idMeal)))
   }, [])
 
@@ -22,14 +22,14 @@ export function useHomeViewModel() {
     try {
       const mealList = await initialMeals()
       setMeals(mealList)
-      loadFavourites()
+      await syncFavouriteIds()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.'
       setError(message)
     } finally {
       setLoading(false)
     }
-  }, [loadFavourites])
+  }, [syncFavouriteIds])
 
   useEffect(() => {
     loadInitialMeals()
@@ -42,7 +42,7 @@ export function useHomeViewModel() {
     try {
       const mealList = await getMeals(query)
       setMeals(mealList)
-      loadFavourites()
+      await syncFavouriteIds()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.'
       setError(message)
@@ -53,12 +53,17 @@ export function useHomeViewModel() {
 
   function resetHome() {
     setQuery('')
-    loadInitialMeals()
+    void loadInitialMeals()
   }
 
-  function handleFavourite(meal: Meal) {
-    addFavourite(meal)
-    setFavouriteIds((ids) => new Set(ids).add(meal.idMeal))
+  async function handleFavourite(meal: Meal) {
+    try {
+      await saveFavourite(meal)
+      await syncFavouriteIds()
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to save favourite.'
+      setError(message)
+    }
   }
 
   return {

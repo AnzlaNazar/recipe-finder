@@ -3,7 +3,7 @@ import MealCard from '../../components/MealCard/MealCard'
 import './FavouritesView.css'
 
 function FavouritesView() {
-  const { favourites, handleRemove } = useFavouritesViewModel()
+  const { favourites, loading, error, removeMeal } = useFavouritesViewModel()
 
   return (
     <main className="favourites">
@@ -12,9 +12,19 @@ function FavouritesView() {
         <p>Saved recipes appear here after tapping Favourite.</p>
       </header>
 
-      {favourites.length === 0 ? (
+      {loading && <p className="favourites__status">Loading favourites…</p>}
+
+      {error && (
+        <p className="favourites__status" role="alert">
+          {error}
+        </p>
+      )}
+
+      {!loading && !error && favourites.length === 0 && (
         <p className="favourites__empty">No favourites saved yet.</p>
-      ) : (
+      )}
+
+      {!loading && !error && favourites.length > 0 && (
         <section className="favourites__list">
           {favourites.map((meal) => (
             <div key={meal.idMeal} className="favourites__item">
@@ -22,7 +32,7 @@ function FavouritesView() {
               <button
                 type="button"
                 className="favourites__remove"
-                onClick={() => handleRemove(meal.idMeal)}
+                onClick={() => removeMeal(meal.idMeal)}
               >
                 Remove
               </button>

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { Meal } from '../../types/meal'
 import './MealCard.css'
 
@@ -16,9 +17,9 @@ function MealCard({ meal, onFavourite, isFavourite = false }: MealCardProps) {
         <p className="meal-card__meta">Category: {meal.strCategory ?? 'Unknown'}</p>
         <p className="meal-card__meta">Area: {meal.strArea ?? 'Unknown'}</p>
         <div className="meal-card__actions">
-          <a className="meal-card__link" href={`/meal/${meal.idMeal}`}>
+          <Link className="meal-card__link" to={`/meal/${meal.idMeal}`}>
             View recipe
-          </a>
+          </Link>
           <button
             type="button"
             className="meal-card__favourite"
