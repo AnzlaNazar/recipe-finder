@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
 import { get, getDatabase, ref, remove, set } from 'firebase/database'
 import type { Meal } from '../types/meal'
 
@@ -21,15 +22,18 @@ const hasFirebaseConfig = Boolean(
 
 let app: ReturnType<typeof initializeApp> | null = null
 let database: ReturnType<typeof getDatabase> | null = null
+let auth: ReturnType<typeof getAuth> | null = null
 
 try {
   if (hasFirebaseConfig) {
     app = initializeApp(firebaseConfig)
     database = getDatabase(app)
+    auth = getAuth(app)
   }
 } catch {
   app = null
   database = null
+  auth = null
 }
 
 const favouritesRef = database ? ref(database, 'favourites') : null
@@ -125,4 +129,4 @@ export async function getFavourites(): Promise<Meal[]> {
   return readLocalFavourites()
 }
 
-export { database }
+export { auth, database }
