@@ -129,4 +129,6 @@ export async function getFavourites(): Promise<Meal[]> {
   return readLocalFavourites()
 }
 
-export { auth, database }
+const db = database
+
+export { auth, db, database }
