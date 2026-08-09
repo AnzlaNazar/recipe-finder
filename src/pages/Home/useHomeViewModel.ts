@@ -15,9 +15,14 @@ export function useHomeViewModel() {
   const [favouriteIds, setFavouriteIds] = useState<Set<string>>(new Set())
 
   const syncFavouriteIds = useCallback(async () => {
-    const favourites = await loadFavourites()
+    if (!user?.uid) {
+      setFavouriteIds(new Set())
+      return
+    }
+
+    const favourites = await loadFavourites(user.uid)
     setFavouriteIds(new Set(favourites.map((meal) => meal.idMeal)))
-  }, [])
+  }, [user?.uid])
 
   const loadInitialMeals = useCallback(async () => {
     setLoading(true)
@@ -67,7 +72,11 @@ export function useHomeViewModel() {
     }
 
     try {
-      await saveFavourite(meal)
+      if (!user?.uid) {
+        throw new Error('A signed-in user is required to save favourites.')
+      }
+
+      await saveFavourite(user.uid, meal)
       await syncFavouriteIds()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to save favourite.'

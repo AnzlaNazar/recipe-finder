@@ -5,6 +5,10 @@ import type { Meal } from '../types/meal'
 
 const STORAGE_KEY = 'recipe-app-favourites'
 
+function getUserStorageKey(userId: string): string {
+  return `${STORAGE_KEY}:${userId}`
+}
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? '',
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? '',
@@ -36,15 +40,13 @@ try {
   auth = null
 }
 
-const favouritesRef = database ? ref(database, 'favourites') : null
-
-function readLocalFavourites(): Meal[] {
+function readLocalFavourites(userId: string): Meal[] {
   if (typeof window === 'undefined') {
     return []
   }
 
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
+    const raw = window.localStorage.getItem(getUserStorageKey(userId))
     if (!raw) {
       return []
     }
@@ -56,21 +58,21 @@ function readLocalFavourites(): Meal[] {
   }
 }
 
-function writeLocalFavourites(meals: Meal[]): void {
+function writeLocalFavourites(userId: string, meals: Meal[]): void {
   if (typeof window === 'undefined') {
     return
   }
 
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(meals))
+  window.localStorage.setItem(getUserStorageKey(userId), JSON.stringify(meals))
 }
 
-async function readFavouriteSnapshot(): Promise<Record<string, Meal>> {
-  if (!favouritesRef) {
+async function readFavouriteSnapshot(userId: string): Promise<Record<string, Meal>> {
+  if (!database) {
     return {}
   }
 
   try {
-    const snapshot = await get(favouritesRef)
+    const snapshot = await get(ref(database, `users/${userId}/favourites`))
 
     if (!snapshot.exists()) {
       return {}
@@ -83,50 +85,62 @@ async function readFavouriteSnapshot(): Promise<Record<string, Meal>> {
   }
 }
 
-export async function addFavourite(meal: Meal): Promise<void> {
-  const existing = readLocalFavourites()
+export async function addFavourite(userId: string, meal: Meal): Promise<void> {
+  if (!userId?.trim()) {
+    throw new Error('A signed-in user is required to save favourites.')
+  }
+
+  const existing = readLocalFavourites(userId)
   const nextMeals = existing.some((item) => item.idMeal === meal.idMeal)
     ? existing.map((item) => (item.idMeal === meal.idMeal ? meal : item))
     : [...existing, meal]
 
-  writeLocalFavourites(nextMeals)
+  writeLocalFavourites(userId, nextMeals)
 
   if (!database) {
     return
   }
 
   try {
-    await set(ref(database, `favourites/${meal.idMeal}`), meal)
+    await set(ref(database, `users/${userId}/favourites/${meal.idMeal}`), meal)
   } catch {
     // Keep the local fallback in place even if Firebase writes fail.
   }
 }
 
-export async function removeFavourite(idMeal: string): Promise<void> {
-  const nextMeals = readLocalFavourites().filter((meal) => meal.idMeal !== idMeal)
-  writeLocalFavourites(nextMeals)
+export async function removeFavourite(userId: string, idMeal: string): Promise<void> {
+  if (!userId?.trim()) {
+    throw new Error('A signed-in user is required to remove favourites.')
+  }
+
+  const nextMeals = readLocalFavourites(userId).filter((meal) => meal.idMeal !== idMeal)
+  writeLocalFavourites(userId, nextMeals)
 
   if (!database) {
     return
   }
 
   try {
-    await remove(ref(database, `favourites/${idMeal}`))
+    await remove(ref(database, `users/${userId}/favourites/${idMeal}`))
   } catch {
     // Keep the local fallback in place even if Firebase writes fail.
   }
 }
 
-export async function getFavourites(): Promise<Meal[]> {
-  const firebaseFavourites = await readFavouriteSnapshot()
+export async function getFavourites(userId: string): Promise<Meal[]> {
+  if (!userId?.trim()) {
+    throw new Error('A signed-in user is required to load favourites.')
+  }
+
+  const firebaseFavourites = await readFavouriteSnapshot(userId)
   const firebaseMeals = Object.values(firebaseFavourites)
 
   if (firebaseMeals.length > 0) {
-    writeLocalFavourites(firebaseMeals)
+    writeLocalFavourites(userId, firebaseMeals)
     return firebaseMeals
   }
 
-  return readLocalFavourites()
+  return readLocalFavourites(userId)
 }
 
 const db = database
