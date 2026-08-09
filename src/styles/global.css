@@ -2,10 +2,16 @@
 
 :root {
   --color-bg: #f6f0e4;
+  --color-surface: #fffef9;
+  --color-surface-strong: #ffffff;
+  --color-surface-muted: #f3ead8;
   --color-primary: #3f5233;
   --color-accent: #e3a034;
   --color-accent-hover: #d4922e;
   --color-text: #2a2620;
+  --color-text-muted: #6d675c;
+  --color-border: rgba(63, 82, 51, 0.16);
+  --drawer-backdrop: rgba(42, 38, 32, 0.45);
 
   --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --font-body: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -21,6 +27,22 @@
 
   --shadow-sm: 0 1px 3px rgba(42, 38, 32, 0.08);
   --shadow-md: 0 4px 12px rgba(42, 38, 32, 0.1);
+}
+
+[data-theme='dark'] {
+  --color-bg: #161811;
+  --color-surface: #23281f;
+  --color-surface-strong: #2d3527;
+  --color-surface-muted: #384531;
+  --color-primary: #dfe9cf;
+  --color-accent: #f0b34b;
+  --color-accent-hover: #f3c06b;
+  --color-text: #f7f1e6;
+  --color-text-muted: #c8c0b1;
+  --color-border: rgba(255, 255, 255, 0.12);
+  --drawer-backdrop: rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 8px 18px rgba(0, 0, 0, 0.32);
 }
 
 *,
