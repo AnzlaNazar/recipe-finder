@@ -1,9 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getMeals, initialMeals } from './HomeModel'
 import type { Meal } from '../../types/meal'
 import { loadFavourites, saveFavourite } from '../Favourites/FavouritesModel'
+import { useAuth } from '../../context/AuthContext'
 
 export function useHomeViewModel() {
+  const navigate = useNavigate()
+  const { user } = useAuth()
   const [query, setQuery] = useState<string>('')
   const [meals, setMeals] = useState<Meal[]>([])
   const [loading, setLoading] = useState<boolean>(false)
@@ -57,6 +61,11 @@ export function useHomeViewModel() {
   }
 
   async function handleFavourite(meal: Meal) {
+    if (!user) {
+      navigate('/favourites')
+      return
+    }
+
     try {
       await saveFavourite(meal)
       await syncFavouriteIds()
