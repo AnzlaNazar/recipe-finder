@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import dishlyLogoLight from '../../assets/dishly-logo-theme-light.png'
+import dishlyLogoDark from '../../assets/dishly-logo-theme-dark.png'
 import './Header.css'
 
 type HeaderProps = {
@@ -71,10 +73,22 @@ function Header({ query, onQueryChange, onSearch, onHomeClick }: HeaderProps) {
     setTheme((current) => (current === 'light' ? 'dark' : 'light'))
   }
 
+  function handleHomeNav() {
+    onHomeClick?.()
+  }
+
   return (
     <>
       <header className="header">
         <div className="header__inner">
+          <Link className="header__brand" to="/" onClick={handleHomeNav} aria-label="Dishly home">
+            <img
+              className="header__logo"
+              src={theme === 'light' ? dishlyLogoLight : dishlyLogoDark}
+              alt="Dishly"
+            />
+          </Link>
+
           <form
             className="header__search"
             onSubmit={(event) => {
@@ -90,21 +104,51 @@ function Header({ query, onQueryChange, onSearch, onHomeClick }: HeaderProps) {
               placeholder="Search recipes..."
               aria-label="Search recipes"
             />
-            <button className="header__search-button" type="submit">
-              Search
+            <button className="header__search-button" type="submit" aria-label="Search">
+              <svg
+                className="header__search-button-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+              <span className="header__search-button-text">Search</span>
             </button>
           </form>
 
-          <button
-            ref={toggleRef}
-            className="header__menu-button"
-            type="button"
-            onClick={() => setIsDrawerOpen(true)}
-            aria-label="Open navigation menu"
-            aria-expanded={isDrawerOpen}
-          >
-            ☰
-          </button>
+          <div className="header__actions">
+            <Link className="header__nav-link" to="/favourites" aria-label="Favourites" title="Favourites">
+              <svg
+                className="header__nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 20.5s-7.5-4.6-10-9.3C0.3 8 1.6 4.6 4.7 3.6c2-.6 4 .1 5.3 1.9C11.3 3.7 13.3 3 15.3 3.6c3.1 1 4.4 4.4 2.7 7.6-2.5 4.7-10 9.3-10 9.3Z" />
+              </svg>
+            </Link>
+
+            <button
+              ref={toggleRef}
+              className="header__menu-button"
+              type="button"
+              onClick={() => setIsDrawerOpen(true)}
+              aria-label="Open navigation menu"
+              aria-expanded={isDrawerOpen}
+            >
+              ☰
+            </button>
+          </div>
         </div>
       </header>
 
@@ -119,13 +163,6 @@ function Header({ query, onQueryChange, onSearch, onHomeClick }: HeaderProps) {
         </div>
 
         <nav className="header__drawer-nav" aria-label="Drawer navigation">
-          <Link className="header__drawer-link" to="/" onClick={closeDrawer}>
-            Home
-          </Link>
-          <Link className="header__drawer-link" to="/favourites" onClick={closeDrawer}>
-            Favourites
-          </Link>
-
           <button className="header__drawer-action" type="button" onClick={toggleTheme}>
             {theme === 'light' ? '🌙 Dark mode' : '☀️ Light mode'}
           </button>

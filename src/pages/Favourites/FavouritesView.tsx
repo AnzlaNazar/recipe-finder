@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useFavouritesViewModel } from './useFavouritesViewModel'
 import MealCard from '../../components/MealCard/MealCard'
 import './FavouritesView.css'
@@ -7,6 +8,10 @@ function FavouritesView() {
 
   return (
     <main className="favourites">
+      <Link className="favourites__back" to="/">
+        ← Back to Home
+      </Link>
+
       <header className="favourites__header">
         <h1>Favourites</h1>
         <p>Saved recipes appear here after tapping Favourite.</p>

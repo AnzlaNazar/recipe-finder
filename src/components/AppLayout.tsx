@@ -3,7 +3,7 @@ import Header from './Header/Header'
 
 function AppLayout() {
   const location = useLocation()
-  const shouldShowHeader = location.pathname !== '/'
+  const shouldShowHeader = location.pathname !== '/' && location.pathname !== '/favourites'
 
   return (
     <>
