@@ -18,16 +18,25 @@ function HomeView() {
           </p>
         )}
 
-        <section className="home__list">
-          {meals.map((meal) => (
-            <MealCard
-              key={meal.idMeal}
-              meal={meal}
-              onFavourite={handleFavourite}
-              isFavourite={favouriteIds.has(meal.idMeal)}
-            />
-          ))}
-        </section>
+        {!loading && !error && meals.length === 0 && (
+          <div className="home__empty">
+            <h2>Recipe not found</h2>
+            <p>We couldn't find a recipe matching your search. Try another recipe name.</p>
+          </div>
+        )}
+
+        {meals.length > 0 && (
+          <section className="home__list">
+            {meals.map((meal) => (
+              <MealCard
+                key={meal.idMeal}
+                meal={meal}
+                onFavourite={handleFavourite}
+                isFavourite={favouriteIds.has(meal.idMeal)}
+              />
+            ))}
+          </section>
+        )}
       </main>
     </>
   )

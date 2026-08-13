@@ -6,7 +6,7 @@ import { deleteFavourite, loadFavourites } from './FavouritesModel'
 export function useFavouritesViewModel() {
   const { user } = useAuth()
   const [favourites, setFavourites] = useState<Meal[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
   async function loadMeals() {

@@ -67,6 +67,14 @@ body {
   min-height: 100vh;
 }
 
+.app-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  color: var(--color-text-muted);
+}
+
 h1,
 h2,
 h3,

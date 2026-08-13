@@ -10,7 +10,7 @@ export function useHomeViewModel() {
   const { user } = useAuth()
   const [query, setQuery] = useState<string>('')
   const [meals, setMeals] = useState<Meal[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [favouriteIds, setFavouriteIds] = useState<Set<string>>(new Set())
 

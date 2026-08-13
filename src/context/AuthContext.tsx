@@ -30,7 +30,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   )
 
   if (authLoading) {
-    return <div>Initializing authentication...</div>
+    return (
+      <div className="app-loading">
+        <p>Loading Dishly…</p>
+      </div>
+    )
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
